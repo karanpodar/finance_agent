@@ -1,0 +1,379 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis Report - MSFT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        
+        .status.success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .status.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .sentiment {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        
+        .sentiment.positive {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .sentiment.negative {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .sentiment.neutral {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+        
+        .summary-box {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+            font-size: 1.05em;
+            line-height: 1.7;
+        }
+        
+        .recommendation-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+            font-size: 1.05em;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+        
+        .error-box {
+            background: linear-gradient(135deg, #fdf2f2, #fed7d7);
+            border-left: 5px solid #e53e3e;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+            color: #c53030;
+        }
+        
+        a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            table {
+                font-size: 0.9em;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📈 Stock Analysis Report</h1>
+            <p>Generated on June 18, 2025 at 04:08 PM</p>
+        </div>
+        
+        <div class="card">
+            <h2>📊 Analysis Summary</h2>
+            <div class="status success">
+                Analysis Completed Successfully
+            </div>
+            
+            <p><strong>Stock Symbol:</strong> MSFT</p>
+            <p><strong>News Articles Found:</strong> 9</p>
+            <p><strong>Status:</strong> Success</p>
+            
+            
+        </div>
+        
+        
+        <div class="card">
+            <h2>📰 News Articles</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Summary</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                <tr>
+                    <td>1</td>
+                    <td><strong>3 Artificial Intelligence Stocks You Can Buy and Hold for the Next Decade</strong></td>
+                    <td>2025-06-18</td>
+                    <td>Nvidia is viewed as a bellwether for artificial intelligence stocks.  The demand for electricity is something that's certain about AI that investors can confidently invest in for the long term.  Nvidi...</td>
+                    <td><a href="https://www.fool.com/investing/2025/06/18/artificial-intelligence-stocks-can-buy-and-hold/" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>2</td>
+                    <td><strong>Meta offered $100 mn bonuses to poach OpenAI employees: CEO Altman</strong></td>
+                    <td>2025-06-18</td>
+                    <td>Meta offered $100 million bonuses to OpenAI employees in an unsuccessful bid to poach the ChatGPT maker's talent and strengthen its own generative AI teams, the startup's CEO, Sam Altman, has said.Fac...</td>
+                    <td><a href="https://finance.yahoo.com/news/meta-offered-100-mn-bonuses-081042230.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>3</td>
+                    <td><strong>Pope Leo makes AI’s threat to humanity a signature issue</strong></td>
+                    <td>2025-06-18</td>
+                    <td>Pope Leo XIV, the new American pope, is making the threat of AI to humanity a key issue of his legacy, even as the technology industry has spent years attempting to make friends with the Vatican.</td>
+                    <td><a href="https://finance.yahoo.com/news/pope-leo-makes-ai-threat-080531102.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>4</td>
+                    <td><strong>Why the UK's AIM is struggling 30 years on</strong></td>
+                    <td>2025-06-18</td>
+                    <td>The UK's alternative investment market has seen some major successes since launching 30 years ago but has recently struggled to attract and retain companies.</td>
+                    <td><a href="https://uk.finance.yahoo.com/news/why-uk-aim-struggling-alternative-investment-050024609.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>5</td>
+                    <td><strong>Bill Gates Once Scoffed, 'Spend All Day With A Guy Who Just Picks Stocks?'—Before Discovering That The 'Stock Picker' Had A Mastermind's Blueprint For Winning In Business</strong></td>
+                    <td>2025-06-17</td>
+                    <td>Back in 1996, Microsoft CEO Bill Gates reviewed a book called Warren Buffett: The Making of an American Capitalist by Roger Lowenstein, where he shared the lessons ‘Oracle of Omaha' Berkshire Hathaway...</td>
+                    <td><a href="https://finance.yahoo.com/news/bill-gates-once-scoffed-spend-233112511.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>6</td>
+                    <td><strong>OpenAI’s $200M DoD contract could squeeze frenemy Microsoft</strong></td>
+                    <td>2025-06-17</td>
+                    <td>The contract could put the model maker in competition with the OpenAI services that Microsoft wants to sell to the DoD.</td>
+                    <td><a href="https://finance.yahoo.com/news/openai-200m-dod-contract-could-210934471.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>7</td>
+                    <td><strong>OpenAI Seeks Profit Waiver From Microsoft (MSFT) Amid Restructuring Push</strong></td>
+                    <td>2025-06-17</td>
+                    <td>Startup also eyes IP exemptions and seeks SoftBank investment</td>
+                    <td><a href="https://finance.yahoo.com/news/openai-seeks-profit-waiver-microsoft-203943681.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>8</td>
+                    <td><strong>Stocks to Watch Recap: T-Mobile, Eli Lilly, Verve Therapeutics, First Solar</strong></td>
+                    <td>2025-06-17</td>
+                    <td>↘️ SunRun (RUN): Solar stocks tumbled after Senate Republicans maintained a full phase-out of solar and wind-energy tax credits in President Trump's megabill. SunRun shares plunged 40% Tuesday. Enphas...</td>
+                    <td><a href="https://www.wsj.com/livecoverage/stock-market-today-trump-tariffs-trade-war-06-17-2025/card/stocks-to-watch-tuesday-sunrun-enphase-energy-mitsubishi-roku-nJtjNB4GqRHqIkHhUgLK?siteid=yhoof2&yptr=yahoo" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>9</td>
+                    <td><strong>Microsoft Shares Slip as OpenAI Dispute Sparks Antitrust Concerns</strong></td>
+                    <td>2025-06-17</td>
+                    <td>Tensions Explode Between Microsoft and OpenAI Over Future Stake</td>
+                    <td><a href="https://finance.yahoo.com/news/microsoft-shares-slip-openai-dispute-183738514.html" target="_blank">View</a></td>
+                </tr>
+                
+                </tbody>
+            </table>
+        </div>
+        
+        
+        
+        
+        
+        <div class="card">
+            <h2>📝 Summary</h2>
+            <div class="summary-box">
+                The overall sentiment from the news articles is mixed, with a clear negative tilt due to several concerns involving Microsoft (MSFT), such as competition from Meta and OpenAI, AI-related risks, contractual disputes, and antitrust issues. However, there are positive elements from articles highlighting AI growth potential and historical investing wisdom. Key points include: MSFT's involvement in AI through OpenAI faces challenges like talent poaching, profit waivers, and regulatory scrutiny, which could impact its market position. Conversely, the long-term outlook for AI and cloud computing might offer opportunities, but recent news emphasizes risks that could affect investor confidence.
+            </div>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>💡 Investment Recommendation</h2>
+            <div class="recommendation-box">
+                Investing in MSFT may be advisable on a cautious basis, given its strong position in AI, cloud computing, and diverse revenue streams, which could provide long-term growth. However, based on the news analysis, there are significant risks, including internal disputes, competition threats, and AI-related concerns, which could lead to volatility or underperformance. Therefore, it is recommended to monitor the situation closely and consider a long-term hold or partial investment, avoiding it if you have a short-term outlook due to the negative sentiment.
+            </div>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>🔍 Full Analysis</h2>
+            <div class="summary-box">
+                <pre style="white-space: pre-wrap; font-family: inherit;">{
+    "3 Artificial Intelligence Stocks You Can Buy and Hold for the Next Decade": "Positive",
+    "Meta offered $100 mn bonuses to poach OpenAI employees: CEO Altman": "Negative",
+    "Pope Leo makes AI’s threat to humanity a signature issue": "Negative",
+    "Why the UK's AIM is struggling 30 years on": "Neutral",
+    "Bill Gates Once Scoffed, 'Spend All Day With A Guy Who Just Picks Stocks?'—Before Discovering That The 'Stock Picker' Had A Mastermind's Blueprint For Winning In Business": "Neutral",
+    "OpenAI’s $200M DoD contract could squeeze frenemy Microsoft": "Negative",
+    "OpenAI Seeks Profit Waiver From Microsoft (MSFT) Amid Restructuring Push": "Negative",
+    "Stocks to Watch Recap: T-Mobile, Eli Lilly, Verve Therapeutics, First Solar": "Neutral",
+    "Microsoft Shares Slip as OpenAI Dispute Sparks Antitrust Concerns": "Negative"
+}
+
+**Summary:** The overall sentiment from the news articles is mixed, with a clear negative tilt due to several concerns involving Microsoft (MSFT), such as competition from Meta and OpenAI, AI-related risks, contractual disputes, and antitrust issues. However, there are positive elements from articles highlighting AI growth potential and historical investing wisdom. Key points include: MSFT's involvement in AI through OpenAI faces challenges like talent poaching, profit waivers, and regulatory scrutiny, which could impact its market position. Conversely, the long-term outlook for AI and cloud computing might offer opportunities, but recent news emphasizes risks that could affect investor confidence.
+
+**Investment Recommendation:** Investing in MSFT may be advisable on a cautious basis, given its strong position in AI, cloud computing, and diverse revenue streams, which could provide long-term growth. However, based on the news analysis, there are significant risks, including internal disputes, competition threats, and AI-related concerns, which could lead to volatility or underperformance. Therefore, it is recommended to monitor the situation closely and consider a long-term hold or partial investment, avoiding it if you have a short-term outlook due to the negative sentiment.</pre>
+            </div>
+        </div>
+        
+        
+        <div class="footer">
+            <p>📊 Stock News Analysis Tool | Generated using AI-powered sentiment analysis</p>
+        </div>
+    </div>
+</body>
+</html>
+        

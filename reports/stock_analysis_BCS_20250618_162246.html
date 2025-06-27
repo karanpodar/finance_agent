@@ -1,0 +1,416 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis Report - BCS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        
+        .status.success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .status.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .sentiment {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        
+        .sentiment.positive {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .sentiment.negative {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .sentiment.neutral {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+        
+        .summary-box {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+            font-size: 1.05em;
+            line-height: 1.7;
+        }
+        
+        .recommendation-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+            font-size: 1.05em;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+        
+        .error-box {
+            background: linear-gradient(135deg, #fdf2f2, #fed7d7);
+            border-left: 5px solid #e53e3e;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+            color: #c53030;
+        }
+        
+        a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            table {
+                font-size: 0.9em;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📈 Stock Analysis Report</h1>
+            <p>Generated on June 18, 2025 at 04:22 PM</p>
+        </div>
+        
+        <div class="card">
+            <h2>📊 Analysis Summary</h2>
+            <div class="status success">
+                Analysis Completed Successfully
+            </div>
+            
+            <p><strong>Stock Symbol:</strong> BCS</p>
+            <p><strong>News Articles Found:</strong> 10</p>
+            <p><strong>Status:</strong> Success</p>
+            
+            
+        </div>
+        
+        
+        <div class="card">
+            <h2>📰 News Articles</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Summary</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                <tr>
+                    <td>1</td>
+                    <td><strong>Best credit card deals of the week, 18 June</strong></td>
+                    <td>2025-06-18</td>
+                    <td>Discover the best credit cards to save money, earn rewards and travel smarter</td>
+                    <td><a href="https://uk.finance.yahoo.com/news/best-credit-card-deals-093401129.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>2</td>
+                    <td><strong>TSB’s Spanish owner considers sale of UK banking business</strong></td>
+                    <td>2025-06-17</td>
+                    <td>It comes a decade after Sabadell bought TSB for £1.7 billion to gain a foothold in the UK.</td>
+                    <td><a href="https://uk.finance.yahoo.com/news/tsb-spanish-owner-considers-sale-071320633.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>3</td>
+                    <td><strong>Fed rate-cut bets heat up, Barclays warns tariff-induced inflation is near</strong></td>
+                    <td>2025-06-16</td>
+                    <td>Investing.com -- With just days to go until the Federal Reserve delivers its rate decision due Wednesday, expectations for the Fed to lean more dovish are gaining traction following a string of cooler...</td>
+                    <td><a href="https://finance.yahoo.com/news/fed-rate-cut-bets-heat-194816282.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>4</td>
+                    <td><strong>Fed on Hold Leaves Wall Street Asking What It Will Take to Cut Interest Rates</strong></td>
+                    <td>2025-06-15</td>
+                    <td>(Bloomberg) -- With Federal Reserve officials signaling an extended hold on interest rates, investors and economists will look to Chair Jerome Powell this week for clues on what might eventually promp...</td>
+                    <td><a href="https://finance.yahoo.com/news/fed-hold-leaves-wall-street-190000028.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>5</td>
+                    <td><strong>Best cash-saving deals ahead of interest rate decision</strong></td>
+                    <td>2025-06-13</td>
+                    <td>Check the best savings accounts to find a top-rated deal that works for you.</td>
+                    <td><a href="https://uk.finance.yahoo.com/news/best-savings-accounts-bank-england-inflation-rates-112047997.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>6</td>
+                    <td><strong>Mortgage rates steady ahead of Bank of England interest rate decision</strong></td>
+                    <td>2025-06-12</td>
+                    <td>Most of the major lenders kept mortgage rates steady this week, ahead of the Bank of England's interest rate decision next week.</td>
+                    <td><a href="https://uk.finance.yahoo.com/news/uk-mortgage-rates-deals-bank-england-latest-140933607.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>7</td>
+                    <td><strong>Barclays Rises 32.3% YTD: Is it the Right Time to Buy the Stock?</strong></td>
+                    <td>2025-06-11</td>
+                    <td>BCS shares are up 32.3% YTD as cost cuts, capital redeployment and solid liquidity drive investor optimism. Is now a good buying opportunity? Let's find out.</td>
+                    <td><a href="https://finance.yahoo.com/news/barclays-rises-32-3-ytd-151800810.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>8</td>
+                    <td><strong>Major lenders raise mortgage rates ahead of Reeves’s spending review</strong></td>
+                    <td>2025-06-11</td>
+                    <td>Two major lenders have raised mortgage rates amid fears Rachel Reeves’s spending spree will slow down interest rate cuts.</td>
+                    <td><a href="https://uk.finance.yahoo.com/news/major-lenders-raise-mortgage-rates-100525570.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>9</td>
+                    <td><strong>Musk-Trump Feud Distracts Tesla Traders Ahead of Robotaxi Launch</strong></td>
+                    <td>2025-06-11</td>
+                    <td>(Bloomberg) -- After years of anticipation and broken promises, Tesla Inc. said its robotaxi service is tentatively set to roll out later this month. Options traders aren’t ready to buy the hype yet.M...</td>
+                    <td><a href="https://finance.yahoo.com/news/musk-trump-feud-distracts-tesla-traders-ahead-of-robotaxi-launch-093000446.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>10</td>
+                    <td><strong>Warner Bros. Split Leaves Bondholders With Painful Choices</strong></td>
+                    <td>2025-06-10</td>
+                    <td>(Bloomberg) -- Just three years after selling one of the biggest high-grade corporate bonds on record, Warner Bros. Discovery Inc. is giving noteholders the type of tough choices more typically faced ...</td>
+                    <td><a href="https://finance.yahoo.com/news/warner-bros-split-leaves-bondholders-140616171.html" target="_blank">View</a></td>
+                </tr>
+                
+                </tbody>
+            </table>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>💭 Sentiment Analysis</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Article Title</th>
+                        <th>Sentiment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>Fed ratecut bets heat up, Barclays warns tariff-induced inflation is near</td>
+                        <td><span class="sentiment negative">Negative</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Fed on Hold Leaves Wall Street Asking What It Will Take to Cut Interest Rates</td>
+                        <td><span class="sentiment neutral">Neutral</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Barclays Rises 32.3% YTD: Is it the Right Time to Buy the Stock?</td>
+                        <td><span class="sentiment negative">Negative</span></td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>📝 Summary</h2>
+            <div class="summary-box">
+                The articles related to BCS (Barclays) highlight mixed sentiments. Negative sentiments stem from concerns about potential inflation risks due to tariffs and the Federal Reserve's cautious stance on rate cuts, which could impact economic stability. Neutral sentiments reflect broader discussions on market expectations and economic trends. While Barclays has shown strong performance with a 32.3% year-to-date increase, the uncertainty surrounding tariffs and economic policies introduces risks that investors must weigh.
+            </div>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>💡 Investment Recommendation</h2>
+            <div class="recommendation-box">
+                Investing in BCS is advisable only for those with a higher risk tolerance and a longer-term investment horizon. The stock's recent outperformance may indicate potential for further growth, but the risks associated with inflation, economic uncertainty, and regulatory changes could lead to volatility. Investors should monitor key factors such as Federal Reserve decisions, global tariff policies, and Barclays' quarterly earnings before making a final decision. Diversification and a thorough analysis of market conditions are recommended.
+            </div>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>🔍 Full Analysis</h2>
+            <div class="summary-box">
+                <pre style="white-space: pre-wrap; font-family: inherit;">**Sentiment Analysis Dictionary:**
+```json
+{
+    "Fed ratecut bets heat up, Barclays warns tariff-induced inflation is near": "Negative",
+    "Fed on Hold Leaves Wall Street Asking What It Will Take to Cut Interest Rates": "Neutral",
+    "Barclays Rises 32.3% YTD: Is it the Right Time to Buy the Stock?": "Negative"
+}
+```
+
+**Summary:**  
+The articles related to BCS (Barclays) highlight mixed sentiments. Negative sentiments stem from concerns about potential inflation risks due to tariffs and the Federal Reserve's cautious stance on rate cuts, which could impact economic stability. Neutral sentiments reflect broader discussions on market expectations and economic trends. While Barclays has shown strong performance with a 32.3% year-to-date increase, the uncertainty surrounding tariffs and economic policies introduces risks that investors must weigh.
+
+**Investment Recommendation:**  
+Investing in BCS is advisable only for those with a higher risk tolerance and a longer-term investment horizon. The stock's recent outperformance may indicate potential for further growth, but the risks associated with inflation, economic uncertainty, and regulatory changes could lead to volatility. Investors should monitor key factors such as Federal Reserve decisions, global tariff policies, and Barclays' quarterly earnings before making a final decision. Diversification and a thorough analysis of market conditions are recommended.</pre>
+            </div>
+        </div>
+        
+        
+        <div class="footer">
+            <p>📊 Stock News Analysis Tool | Generated using AI-powered sentiment analysis</p>
+        </div>
+    </div>
+</body>
+</html>
+        

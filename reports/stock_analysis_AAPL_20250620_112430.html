@@ -1,0 +1,443 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis Report - AAPL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        
+        .status.success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .status.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .sentiment {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        
+        .sentiment.positive {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .sentiment.negative {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .sentiment.neutral {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+        
+        .summary-box {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+            font-size: 1.05em;
+            line-height: 1.7;
+        }
+        
+        .recommendation-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+            font-size: 1.05em;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+        
+        .error-box {
+            background: linear-gradient(135deg, #fdf2f2, #fed7d7);
+            border-left: 5px solid #e53e3e;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+            color: #c53030;
+        }
+        
+        a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            table {
+                font-size: 0.9em;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📈 Stock Analysis Report</h1>
+            <p>Generated on June 20, 2025 at 11:24 AM</p>
+        </div>
+        
+        <div class="card">
+            <h2>📊 Analysis Summary</h2>
+            <div class="status success">
+                Analysis Completed Successfully
+            </div>
+            
+            <p><strong>Stock Symbol:</strong> AAPL</p>
+            <p><strong>News Articles Found:</strong> 9</p>
+            <p><strong>Status:</strong> Success</p>
+            
+            
+        </div>
+        
+        
+        <div class="card">
+            <h2>📰 News Articles</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Summary</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                <tr>
+                    <td>1</td>
+                    <td><strong>The Trump phone probably won’t be built in America (and may never be)</strong></td>
+                    <td>2025-06-18</td>
+                    <td>President Trump's family is launching a smartphone. But it might never be built in America like the company claims.</td>
+                    <td><a href="https://finance.yahoo.com/news/the-trump-phone-probably-wont-be-built-in-america-and-may-never-be-162105071.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>2</td>
+                    <td><strong>Social Media Ban Moves Closer in Australia After Tech Trial</strong></td>
+                    <td>2025-06-20</td>
+                    <td>(Bloomberg) -- Australia’s world-first social media ban for under-16s moved closer to implementation after a key trial found that checking a user’s age is technologically possible and can be integrate...</td>
+                    <td><a href="https://finance.yahoo.com/news/social-media-ban-moves-closer-011443922.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>3</td>
+                    <td><strong>Steve Jobs Once Gave A Secretary A Brand New Jaguar Out Of The Blue, Here Is Why The Apple Co-Founder Was So Generous</strong></td>
+                    <td>2025-06-19</td>
+                    <td>Steve Jobs earned a reputation for merciless standards, yet sometimes his demand for perfection came wrapped in jaw-dropping generosity. What Happened: Ron Givens, Apple's (NASDAQ:AAPL) director of qu...</td>
+                    <td><a href="https://finance.yahoo.com/news/steve-jobs-once-gave-secretary-213053278.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>4</td>
+                    <td><strong>Apple Taps AI to Design Next-Gen Chips: Exec Hints at Major Shift</strong></td>
+                    <td>2025-06-19</td>
+                    <td>Apple May Use AI to Build Chips Faster Than Ever, Exec Signals</td>
+                    <td><a href="https://finance.yahoo.com/news/apple-taps-ai-design-next-185616207.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>5</td>
+                    <td><strong>The Week in AI: "All incumbents are gonna get nuked."</strong></td>
+                    <td>2025-06-19</td>
+                    <td>A new civil war in AI, Andreessen's rant, and Zuck splashes the pot.</td>
+                    <td><a href="https://finance.yahoo.com/news/week-ai-incumbents-gonna-nuked-173600653.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>6</td>
+                    <td><strong>Apple Explores AI to Speed Custom Chips</strong></td>
+                    <td>2025-06-19</td>
+                    <td>AI-enhanced EDA tools from Cadence and Synopsys could redefine chip development</td>
+                    <td><a href="https://finance.yahoo.com/news/apple-explores-ai-speed-custom-144912829.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>7</td>
+                    <td><strong>Trump Trade: President said to weigh possible U.S. strike against Iran</strong></td>
+                    <td>2025-06-19</td>
+                    <td>Catch up on the top industries and stocks that were impacted, or were predicted to be impacted, by the comments, actions and policies of President Donald Trump with this daily recap compiled by The Fl...</td>
+                    <td><a href="https://finance.yahoo.com/news/trump-trade-president-said-weigh-141055103.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>8</td>
+                    <td><strong>Dan Ives' Wedbush Just Launched an ETF -- Should You Buy In?</strong></td>
+                    <td>2025-06-19</td>
+                    <td>The Dan Ives Wedbush AI Revolution ETF invests in companies at the forefront of innovation.  A 0.75% expense ratio is pricey, but could be worth it if the Ives ETF strategy manages to outperform.  Pro...</td>
+                    <td><a href="https://www.fool.com/investing/2025/06/19/dan-ives-wedbush-just-launched-an-etf-should-you/" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>9</td>
+                    <td><strong>Should You Forget Apple and Buy 2 Artificial Intelligence (AI) Stocks Instead?</strong></td>
+                    <td>2025-06-19</td>
+                    <td>Apple is falling behind in the artificial intelligence field, and the business is growing slowly.  ASML and Taiwan Semiconductor can benefit from increased spending on AI computer chips.  Both semicon...</td>
+                    <td><a href="https://www.fool.com/investing/2025/06/19/should-you-forget-apple-and-buy-2-artificial-intel/" target="_blank">View</a></td>
+                </tr>
+                
+                </tbody>
+            </table>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>💭 Sentiment Analysis</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Article Title</th>
+                        <th>Sentiment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>The Trump phone probably won’t be built in America (and may never be)</td>
+                        <td><span class="sentiment negative">Negative</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Social Media Ban Moves Closer in Australia After Tech Trial</td>
+                        <td><span class="sentiment neutral">Neutral</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Steve Jobs Once Gave A Secretary A Brand New Jaguar Out Of The Blue, Here Is Why...</td>
+                        <td><span class="sentiment positive">Positive</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Apple Taps AI to Design Next-Gen Chips: Exec Hints at Major Shift</td>
+                        <td><span class="sentiment positive">Positive</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>The Week in AI: "All incumbents are gonna get nuked."</td>
+                        <td><span class="sentiment positive">Positive</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Apple Explores AI to Speed Custom Chips</td>
+                        <td><span class="sentiment positive">Positive</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Trump Trade: President said to weigh possible U.S. strike against Iran</td>
+                        <td><span class="sentiment neutral">Neutral</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Dan Ives' Wedbush Just Launched an ETF -- Should You Buy In?</td>
+                        <td><span class="sentiment neutral">Neutral</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Should You Forget Apple and Buy 2 Artificial Intelligence (AI) Stocks Instead?</td>
+                        <td><span class="sentiment negative">Negative</span></td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>📝 Summary</h2>
+            <div class="summary-box">
+                The news articles present a mixed sentiment toward AAPL. On the positive side, several reports highlight Apple's advancements in AI chip design, showcasing innovation and potential competitive advantages. However, there are concerns about Apple falling behind in the AI race compared to other tech companies, and a negative outlook on the Trump phone's manufacturing claims. The geopolitical news about potential U.S. actions in Iran is neutral but could indirectly impact market sentiment. Overall, the articles reflect a balanced view, with strengths in AI innovation but vulnerabilities in other areas.
+            </div>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>💡 Investment Recommendation</h2>
+            <div class="recommendation-box">
+                AAPL remains a strong long-term investment due to its leadership in AI chip development and innovation. However, short-term risks include competition in the AI space and potential regulatory or geopolitical headwinds. Investors should monitor advancements in AI technology and Apple's ability to maintain its edge. A "hold" recommendation is advised, with a focus on the company's AI initiatives as a key growth driver.
+            </div>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>🔍 Full Analysis</h2>
+            <div class="summary-box">
+                <pre style="white-space: pre-wrap; font-family: inherit;">```json
+{
+    "The Trump phone probably won’t be built in America (and may never be)": "Negative",
+    "Social Media Ban Moves Closer in Australia After Tech Trial": "Neutral",
+    "Steve Jobs Once Gave A Secretary A Brand New Jaguar Out Of The Blue, Here Is Why The Apple Co-Founder Was So Generous": "Positive",
+    "Apple Taps AI to Design Next-Gen Chips: Exec Hints at Major Shift": "Positive",
+    "The Week in AI: \"All incumbents are gonna get nuked.\"": "Positive",
+    "Apple Explores AI to Speed Custom Chips": "Positive",
+    "Trump Trade: President said to weigh possible U.S. strike against Iran": "Neutral",
+    "Dan Ives' Wedbush Just Launched an ETF -- Should You Buy In?": "Neutral",
+    "Should You Forget Apple and Buy 2 Artificial Intelligence (AI) Stocks Instead?": "Negative"
+}
+```
+
+**Summary:**  
+The news articles present a mixed sentiment toward AAPL. On the positive side, several reports highlight Apple's advancements in AI chip design, showcasing innovation and potential competitive advantages. However, there are concerns about Apple falling behind in the AI race compared to other tech companies, and a negative outlook on the Trump phone's manufacturing claims. The geopolitical news about potential U.S. actions in Iran is neutral but could indirectly impact market sentiment. Overall, the articles reflect a balanced view, with strengths in AI innovation but vulnerabilities in other areas.
+
+**Investment Recommendation:**  
+AAPL remains a strong long-term investment due to its leadership in AI chip development and innovation. However, short-term risks include competition in the AI space and potential regulatory or geopolitical headwinds. Investors should monitor advancements in AI technology and Apple's ability to maintain its edge. A "hold" recommendation is advised, with a focus on the company's AI initiatives as a key growth driver.</pre>
+            </div>
+        </div>
+        
+        
+        <div class="footer">
+            <p>📊 Stock News Analysis Tool | Generated using AI-powered sentiment analysis</p>
+        </div>
+    </div>
+</body>
+</html>
+        

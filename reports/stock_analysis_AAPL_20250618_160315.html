@@ -1,0 +1,460 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis Report - AAPL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        
+        .status.success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .status.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .sentiment {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        
+        .sentiment.positive {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .sentiment.negative {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .sentiment.neutral {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+        
+        .summary-box {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+            font-size: 1.05em;
+            line-height: 1.7;
+        }
+        
+        .recommendation-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+            font-size: 1.05em;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+        
+        .error-box {
+            background: linear-gradient(135deg, #fdf2f2, #fed7d7);
+            border-left: 5px solid #e53e3e;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+            color: #c53030;
+        }
+        
+        a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            table {
+                font-size: 0.9em;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📈 Stock Analysis Report</h1>
+            <p>Generated on June 18, 2025 at 04:03 PM</p>
+        </div>
+        
+        <div class="card">
+            <h2>📊 Analysis Summary</h2>
+            <div class="status success">
+                Analysis Completed Successfully
+            </div>
+            
+            <p><strong>Stock Symbol:</strong> AAPL</p>
+            <p><strong>News Articles Found:</strong> 10</p>
+            <p><strong>Status:</strong> Success</p>
+            
+            
+        </div>
+        
+        
+        <div class="card">
+            <h2>📰 News Articles</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Summary</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                <tr>
+                    <td>1</td>
+                    <td><strong>Best Stock to Buy Right Now: Amazon vs. Apple</strong></td>
+                    <td>2025-06-18</td>
+                    <td>Amazon's recent stock performance and growth are much better than Apple's.  Apple seems to be stronger financially and has a more attractive valuation than Amazon.  Amazon (NASDAQ: AMZN) stock has sky...</td>
+                    <td><a href="https://www.fool.com/investing/2025/06/18/best-stock-to-buy-right-now-amazon-vs-apple/" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>2</td>
+                    <td><strong>This Artificial Intelligence (AI) Stock Isn't in Warren Buffett's Portfolio -- but It Follows His Rules</strong></td>
+                    <td>2025-06-18</td>
+                    <td>Warren Buffett's simple investing strategy has steered Berkshire Hathaway to market-beating returns for six decades.  Buffett rarely invests in tech stocks, but he has made some exceptions for quality...</td>
+                    <td><a href="https://www.fool.com/investing/2025/06/18/this-ai-stock-warren-buffetts-portfolio-his-rules/" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>3</td>
+                    <td><strong>The Best Trillion-Dollar Stock to Buy Right Now? Wall Street Has a Clear Answer for Investors.</strong></td>
+                    <td>2025-06-18</td>
+                    <td>Target prices set by Wall Street analysts imply Nvidia is the best trillion-dollar stock to buy right now.  Nvidia reported strong first-quarter financial results despite headwinds related to export r...</td>
+                    <td><a href="https://www.fool.com/investing/2025/06/18/best-trillion-dollar-stock-to-buy-now-wall-street/" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>4</td>
+                    <td><strong>Prediction: 2 Stocks That'll Be Worth More Than Apple 5 Years From Now</strong></td>
+                    <td>2025-06-18</td>
+                    <td>Apple is one of the largest companies in the world, but its growth has slowed, and it is lagging in AI.  Amazon, meanwhile, is an AI leader, using the technology to drive growth and efficiencies.  Met...</td>
+                    <td><a href="https://www.fool.com/investing/2025/06/18/prediction-stocks-worth-more-than-apple/" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>5</td>
+                    <td><strong>Apple WWDC25 – Enhancing ecosystem value over single AI agent</strong></td>
+                    <td>2025-06-18</td>
+                    <td>Apple’s WWDC25 was about enhancing its user interface with AI capabilities instead of a singular agentic experience. It steered clear of Siri and seems to have learned from its marketing snafus of 202...</td>
+                    <td><a href="https://www.verdict.co.uk/apple-wwdc25-announcements/" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>6</td>
+                    <td><strong>AI Could Create the First $10 Trillion Company. This Stock Pro Lays Out How.</strong></td>
+                    <td>2025-06-18</td>
+                    <td>A conversation with Ulrike Hoffmann-Burchardi of UBS Global Wealth Management. Where she sees the next “transformational innovations.”</td>
+                    <td><a href="https://www.barrons.com/articles/ai-nvidia-ubs-ulrike-hoffman-burchardi-abec0127?siteid=yhoof2&yptr=yahoo" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>7</td>
+                    <td><strong>Why the UK's AIM is struggling 30 years on</strong></td>
+                    <td>2025-06-18</td>
+                    <td>The UK's alternative investment market has seen some major successes since launching 30 years ago but has recently struggled to attract and retain companies.</td>
+                    <td><a href="https://uk.finance.yahoo.com/news/why-uk-aim-struggling-alternative-investment-050024609.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>8</td>
+                    <td><strong>US-China Tech Fight Widens After Taiwan Blacklists Huawei</strong></td>
+                    <td>2025-06-18</td>
+                    <td>(Bloomberg) -- Taiwan joined a yearslong US campaign to curtail China’s technological ascent when it blacklisted the country’s AI and chipmaking champions, an unprecedented step that may signal a resu...</td>
+                    <td><a href="https://finance.yahoo.com/news/us-china-tech-fight-widens-021748913.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>9</td>
+                    <td><strong>Trump Flexes Security Powers to Keep Global Tariff Goal Alive</strong></td>
+                    <td>2025-06-18</td>
+                    <td>(Bloomberg) -- Most Read from BloombergSecurity Concerns Hit Some of the World’s ‘Most Livable Cities’How E-Scooters Conquered (Most of) EuropeAs Part of a $45 Billion Push, ICE Prepares for a Vast Ex...</td>
+                    <td><a href="https://finance.yahoo.com/news/trump-flexes-security-powers-keep-040001084.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>10</td>
+                    <td><strong>Alibaba and Apple team up on local AI models for China</strong></td>
+                    <td>2025-06-17</td>
+                    <td>Four quantization levels on iPhone and Mac signal regulatory green light</td>
+                    <td><a href="https://finance.yahoo.com/news/alibaba-apple-team-local-ai-204556259.html" target="_blank">View</a></td>
+                </tr>
+                
+                </tbody>
+            </table>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>💭 Sentiment Analysis</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Article Title</th>
+                        <th>Sentiment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>Best Stock to Buy Right Now: Amazon vs. Apple</td>
+                        <td><span class="sentiment negative">Negative</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>This Artificial Intelligence (AI) Stock Isn't in Warren Buffett's Portfolio -- b...</td>
+                        <td><span class="sentiment neutral">Neutral</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>The Best Trillion-Dollar Stock to Buy Right Now? Wall Street Has a Clear Answer ...</td>
+                        <td><span class="sentiment neutral">Neutral</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Prediction: 2 Stocks That'll Be Worth More Than Apple 5 Years From Now</td>
+                        <td><span class="sentiment negative">Negative</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Apple WWDC25 – Enhancing ecosystem value over single AI agent</td>
+                        <td><span class="sentiment positive">Positive</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>AI Could Create the First $10 Trillion Company. This Stock Pro Lays Out How.</td>
+                        <td><span class="sentiment neutral">Neutral</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Why the UK's AIM is struggling 30 years on</td>
+                        <td><span class="sentiment neutral">Neutral</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>US-China Tech Fight Widens After Taiwan Blacklists Huawei</td>
+                        <td><span class="sentiment negative">Negative</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Trump Flexes Security Powers to Keep Global Tariff Goal Alive</td>
+                        <td><span class="sentiment negative">Negative</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Alibaba and Apple team up on local AI models for China</td>
+                        <td><span class="sentiment positive">Positive</span></td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>📝 Summary</h2>
+            <div class="summary-box">
+                The news articles present a mixed sentiment toward AAPL. Some articles highlight its strengths, such as its ecosystem integration and partnerships (e.g., with Alibaba for AI models in China), while others criticize its slower growth and AI adoption compared to competitors like Amazon and Nvidia. The overall sentiment is cautious, with concerns about geopolitical risks (e.g., US-China tech disputes) and the potential for other stocks to outperform AAPL in the future. Key positive points include Apple's focus on user experience and its AI strategy, but negative aspects include its lag in AI innovation and exposure to global trade tensions.
+
+3.
+            </div>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>💡 Investment Recommendation</h2>
+            <div class="recommendation-box">
+                AAPL remains a strong long-term investment due to its robust ecosystem, brand loyalty, and recent advancements in AI. However, short-term caution is advised due to its slower growth in AI compared to competitors and heightened geopolitical risks. Investors should maintain existing positions but avoid aggressive buying unless the company demonstrates faster AI innovation and favorable regulatory developments.
+            </div>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>🔍 Full Analysis</h2>
+            <div class="summary-box">
+                <pre style="white-space: pre-wrap; font-family: inherit;">1. **Sentiment Analysis Dictionary:**
+```json
+{
+    "Best Stock to Buy Right Now: Amazon vs. Apple": "Negative",
+    "This Artificial Intelligence (AI) Stock Isn't in Warren Buffett's Portfolio -- but It Follows His Rules": "Neutral",
+    "The Best Trillion-Dollar Stock to Buy Right Now? Wall Street Has a Clear Answer for Investors.": "Neutral",
+    "Prediction: 2 Stocks That'll Be Worth More Than Apple 5 Years From Now": "Negative",
+    "Apple WWDC25 – Enhancing ecosystem value over single AI agent": "Positive",
+    "AI Could Create the First $10 Trillion Company. This Stock Pro Lays Out How.": "Neutral",
+    "Why the UK's AIM is struggling 30 years on": "Neutral",
+    "US-China Tech Fight Widens After Taiwan Blacklists Huawei": "Negative",
+    "Trump Flexes Security Powers to Keep Global Tariff Goal Alive": "Negative",
+    "Alibaba and Apple team up on local AI models for China": "Positive"
+}
+```
+
+2. **Summary:**  
+The news articles present a mixed sentiment toward AAPL. Some articles highlight its strengths, such as its ecosystem integration and partnerships (e.g., with Alibaba for AI models in China), while others criticize its slower growth and AI adoption compared to competitors like Amazon and Nvidia. The overall sentiment is cautious, with concerns about geopolitical risks (e.g., US-China tech disputes) and the potential for other stocks to outperform AAPL in the future. Key positive points include Apple's focus on user experience and its AI strategy, but negative aspects include its lag in AI innovation and exposure to global trade tensions.
+
+3. **Investment Recommendation:**  
+AAPL remains a strong long-term investment due to its robust ecosystem, brand loyalty, and recent advancements in AI. However, short-term caution is advised due to its slower growth in AI compared to competitors and heightened geopolitical risks. Investors should maintain existing positions but avoid aggressive buying unless the company demonstrates faster AI innovation and favorable regulatory developments.</pre>
+            </div>
+        </div>
+        
+        
+        <div class="footer">
+            <p>📊 Stock News Analysis Tool | Generated using AI-powered sentiment analysis</p>
+        </div>
+    </div>
+</body>
+</html>
+        

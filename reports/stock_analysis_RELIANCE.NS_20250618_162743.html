@@ -1,0 +1,458 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Analysis Report - RELIANCE.NS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        
+        .status.success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .status.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .sentiment {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+        
+        .sentiment.positive {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .sentiment.negative {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .sentiment.neutral {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+        
+        .summary-box {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+            font-size: 1.05em;
+            line-height: 1.7;
+        }
+        
+        .recommendation-box {
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+            font-size: 1.05em;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+        
+        .error-box {
+            background: linear-gradient(135deg, #fdf2f2, #fed7d7);
+            border-left: 5px solid #e53e3e;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+            color: #c53030;
+        }
+        
+        a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            table {
+                font-size: 0.9em;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📈 Stock Analysis Report</h1>
+            <p>Generated on June 18, 2025 at 04:27 PM</p>
+        </div>
+        
+        <div class="card">
+            <h2>📊 Analysis Summary</h2>
+            <div class="status success">
+                Analysis Completed Successfully
+            </div>
+            
+            <p><strong>Stock Symbol:</strong> RELIANCE.NS</p>
+            <p><strong>News Articles Found:</strong> 10</p>
+            <p><strong>Status:</strong> Success</p>
+            
+            
+        </div>
+        
+        
+        <div class="card">
+            <h2>📰 News Articles</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Summary</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                <tr>
+                    <td>1</td>
+                    <td><strong>Trump Family’s New Business Partner Is India’s Richest Man</strong></td>
+                    <td>2025-06-17</td>
+                    <td>The project with the Ambani conglomerate is part of a foreign dealmaking spree with the first family.</td>
+                    <td><a href="https://www.wsj.com/politics/elections/trump-familys-new-business-partner-is-indias-richest-man-6846bcfe?siteid=yhoof2&yptr=yahoo" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>2</td>
+                    <td><strong>Market Chatter: OpenAI Taps Investors for Next Installment of $40 Billion Financing</strong></td>
+                    <td>2025-06-12</td>
+                    <td>Microsoft (MSFT)-backed OpenAI is tapping Saudi Arabia's Public Investment Fund, India's Reliance In</td>
+                    <td><a href="https://finance.yahoo.com/news/market-chatter-openai-taps-investors-193234882.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>3</td>
+                    <td><strong>Shein Reportedly Making Plans With Reliance to Export India-Made Goods</strong></td>
+                    <td>2025-06-12</td>
+                    <td>According to Reuters, the fast-fashion e-tailer is working with Reliance on recruiting more manufacturing partners in India.</td>
+                    <td><a href="https://sourcingjournal.com/topics/business-news/shein-reliance-retail-india-manufacturing-export-consumers-1234751044/" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>4</td>
+                    <td><strong>Reliance Industries trims stake in India's Asian Paints</strong></td>
+                    <td>2025-06-12</td>
+                    <td>India’s largest paintmaker is currently facing potential antitrust scrutiny, while its growth is being challenged by aggressive new entrants like the Aditya Birla Group’s Birla Opus, as well as urban ...</td>
+                    <td><a href="https://sg.finance.yahoo.com/news/indias-reliance-industries-sells-901-103017188.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>5</td>
+                    <td><strong>OpenAI has discussed raising money from Saudi Arabia, Indian investors, The Information reports</strong></td>
+                    <td>2025-06-12</td>
+                    <td>OpenAI is looking to raise more funds to fuel its model development and ambitious infrastructure plan Stargate, with the financing led by SoftBank.  Earlier this year, OpenAI CEO Sam Altman met with I...</td>
+                    <td><a href="https://finance.yahoo.com/news/openai-discussed-raising-money-saudi-000515867.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>6</td>
+                    <td><strong>Exclusive-Shein and Reliance aim to sell India-made clothes abroad within a year, sources say</strong></td>
+                    <td>2025-06-09</td>
+                    <td>MUMBAI/LONDON (Reuters) -Fashion retailer Shein and partner Reliance Retail plan to rapidly expand their Indian supplier base and start international sales of India-made Shein-branded clothes within s...</td>
+                    <td><a href="https://finance.yahoo.com/news/exclusive-shein-reliance-aim-sell-064419058.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>7</td>
+                    <td><strong>Private refiners tap India's drivers as export markets tighten</strong></td>
+                    <td>2025-06-06</td>
+                    <td>NEW DELHI (Reuters) -India's two major private-sector refiners, which have long prioritised exports, are turning to local sales, grabbing share in the country's fast-growing $150 billion fuel retail m...</td>
+                    <td><a href="https://sg.finance.yahoo.com/news/private-refiners-tap-indias-drivers-061351156.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>8</td>
+                    <td><strong>BP's Castrol unit draws interest from Apollo, India's Reliance, Bloomberg News reports</strong></td>
+                    <td>2025-05-28</td>
+                    <td>BP's Castrol lubricants business is attracting interest from companies such as India's Reliance Industries, Bloomberg News reported on Wednesday, citing people familiar with the matter. The business h...</td>
+                    <td><a href="https://sg.finance.yahoo.com/news/bps-castrol-unit-draws-interest-181804997.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>9</td>
+                    <td><strong>India's Reliance to start solar module factory this year, exec says</strong></td>
+                    <td>2025-05-22</td>
+                    <td>"We are today building three bigger factories... in order to produce clean energy requirements," said Partha P Maitra, President, Strategy and Initiatives at Reliance Industries.  Reliance aims to eve...</td>
+                    <td><a href="https://sg.finance.yahoo.com/news/indias-reliance-start-solar-module-073754086.html" target="_blank">View</a></td>
+                </tr>
+                
+                <tr>
+                    <td>10</td>
+                    <td><strong>Indian billionaire Ambani to meet Trump, Qatar emir in Doha, sources say</strong></td>
+                    <td>2025-05-14</td>
+                    <td>NEW DELHI (Reuters) -Indian billionaire Mukesh Ambani will meet U.S. President Donald Trump and the emir of Qatar in Doha on Wednesday, two sources told Reuters, as his company Reliance Industries loo...</td>
+                    <td><a href="https://finance.yahoo.com/news/indian-billionaire-ambani-meet-trump-090843927.html" target="_blank">View</a></td>
+                </tr>
+                
+                </tbody>
+            </table>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>💭 Sentiment Analysis</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Article Title</th>
+                        <th>Sentiment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>Trump Family’s New Business Partner Is India’s Richest Man</td>
+                        <td><span class="sentiment positive">Positive</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Market Chatter: OpenAI Taps Investors for Next Installment of $40 Billion Financ...</td>
+                        <td><span class="sentiment positive">Positive</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Shein Reportedly Making Plans With Reliance to Export India-Made Goods</td>
+                        <td><span class="sentiment positive">Positive</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Reliance Industries trims stake in India's Asian Paints</td>
+                        <td><span class="sentiment neutral">Neutral</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>OpenAI has discussed raising money from Saudi Arabia, Indian investors, The Info...</td>
+                        <td><span class="sentiment positive">Positive</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Exclusive-Shein and Reliance aim to sell India-made clothes abroad within a year...</td>
+                        <td><span class="sentiment positive">Positive</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Private refiners tap India's drivers as export markets tighten</td>
+                        <td><span class="sentiment positive">Positive</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>BP's Castrol unit draws interest from Apollo, India's Reliance, Bloomberg News r...</td>
+                        <td><span class="sentiment positive">Positive</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>India's Reliance to start solar module factory this year, exec says</td>
+                        <td><span class="sentiment positive">Positive</span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Indian billionaire Ambani to meet Trump, Qatar emir in Doha, sources say</td>
+                        <td><span class="sentiment positive">Positive</span></td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>📝 Summary</h2>
+            <div class="summary-box">
+                No summary available
+            </div>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>💡 Investment Recommendation</h2>
+            <div class="recommendation-box">
+                No recommendation available
+            </div>
+        </div>
+        
+        
+        
+        <div class="card">
+            <h2>🔍 Full Analysis</h2>
+            <div class="summary-box">
+                <pre style="white-space: pre-wrap; font-family: inherit;">**1. Sentiment Analysis Dictionary:**
+```json
+{
+    "Trump Family’s New Business Partner Is India’s Richest Man": "Positive",
+    "Market Chatter: OpenAI Taps Investors for Next Installment of $40 Billion Financing": "Positive",
+    "Shein Reportedly Making Plans With Reliance to Export India-Made Goods": "Positive",
+    "Reliance Industries trims stake in India's Asian Paints": "Neutral",
+    "OpenAI has discussed raising money from Saudi Arabia, Indian investors, The Information reports": "Positive",
+    "Exclusive-Shein and Reliance aim to sell India-made clothes abroad within a year, sources say": "Positive",
+    "Private refiners tap India's drivers as export markets tighten": "Positive",
+    "BP's Castrol unit draws interest from Apollo, India's Reliance, Bloomberg News reports": "Positive",
+    "India's Reliance to start solar module factory this year, exec says": "Positive",
+    "Indian billionaire Ambani to meet Trump, Qatar emir in Doha, sources say": "Positive"
+}
+```
+
+**2. Summary:**
+The news articles about RELIANCE.NS predominantly convey a **positive** sentiment, highlighting strategic partnerships, international investments, and diversification into new sectors. Key developments include collaborations with global tech giants like OpenAI, partnerships with fast-fashion retailers like Shein to expand Indian manufacturing exports, and investments in renewable energy (solar module factories). Reliance is also strengthening its geopolitical ties by meeting with foreign leaders and exploring acquisitions in strategic sectors like lubricants. However, the divestment of its stake in Asian Paints is presented as a neutral action, driven by external market challenges rather than internal issues. Overall, the company appears focused on growth through diversification and global expansion.
+
+**3. Investment Recommendation:**
+**Advisable for long-term investors.** Reliance Industries demonstrates strong strategic positioning through its diversification into AI, renewable energy, and international markets. The partnerships with OpenAI and Shein, along with its investments in solar energy, position the company for growth in high-potential sectors. The divestment of Asian Paints is a neutral move, reflecting external market pressures rather than a sign of weakness. However, short-term investors should monitor regulatory risks and competitive dynamics in sectors like paints and fuels. The stock’s performance may be volatile due to these factors, but its long-term prospects remain robust.</pre>
+            </div>
+        </div>
+        
+        
+        <div class="footer">
+            <p>📊 Stock News Analysis Tool | Generated using AI-powered sentiment analysis</p>
+        </div>
+    </div>
+</body>
+</html>
+        
